@@ -113,11 +113,10 @@ I chose a sliding-window request log rather than a fixed-window counter or a tok
 This proof of concept is intentionally simple, so its most important limitation is that state is local to one process. On restart, all quotas reset and clients receive fresh capacity immediately. That is acceptable for a local demo and a short hiring challenge, but it is not acceptable for production because it breaks fairness and makes throttling behavior inconsistent across restarts. With multiple application instances behind a load balancer, each instance keeps its own limiter state, so clients can effectively multiply their quota across replicas and the behavior depends on which instance receives their traffic. That means the design is not safe for a multi-node deployment. A production version would move to a shared atomic store such as Redis and enforce the refill, check, and consume steps inside one atomic script or transaction. This would preserve consistency across replicas and make restart behavior more predictable. Memory growth is also a concern: as the number of organizations and endpoint categories grows, the in-memory bucket map can become large. Cleanup and bounded cardinality matter because otherwise the limiter becomes a source of memory pressure. Useful monitoring signals would include allowed and rejected requests, rejection rate by organization and endpoint type, active bucket count, cleanup removals, middleware latency, and configuration errors. Those signals would help catch the first signs that the limiter is becoming too large or too unevenly distributed to trust.
 
 ### B2 — Required Reasoning Question
-CANDIDATE MUST COMPLETE WITHOUT AI ASSISTANCE
-
 Describe a scenario where an AI coding assistant gives a plausible but incorrect answer for this problem. What would the incorrect output look like? How would you catch it before acting on it?
 
-[Write your own answer here before submission.]
+An AI coding assistant might generate a rate limiter using a shared in-memory dictionary where checking the current request count and incrementing it happen separately, then incorrectly claim the solution is thread-safe. The code could look correct in basic tests but allow extra requests when multiple requests arrive concurrently because they may all read the same count before it is updated. I would catch this by reviewing whether the check-and-increment operation is atomic and by running a concurrency test that sends many parallel requests from the same client, verifying that the number of successful requests never exceeds the configured limit.
+
 
 ## Section C: AI Usage Log
 A concise summary appears here; the detailed log is in [docs/AI_USAGE_LOG.md](docs/AI_USAGE_LOG.md).
