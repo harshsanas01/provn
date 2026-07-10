@@ -1,0 +1,54 @@
+plans:
+  standard:
+    organization:
+      requests: 100
+      window_seconds: 60
+      burst: 20
+  premium:
+    organization:
+      requests: 500
+      window_seconds: 60
+      burst: 100
+  enterprise:
+    organization:
+      requests: 1200
+      window_seconds: 60
+      burst: 250
+
+organizations:
+  org-standard:
+    plan: standard
+  org-premium:
+    plan: premium
+  org-enterprise:
+    plan: enterprise
+
+endpoint_limits:
+  read:
+    requests: 120
+    window_seconds: 60
+    burst: 30
+  write:
+    requests: 3
+    window_seconds: 60
+    burst: 0
+  expensive:
+    requests: 2
+    window_seconds: 60
+    burst: 0
+
+routes:
+  - path_prefix: /api/reports
+    category: expensive
+  - path_prefix: /api/health
+    category: exempt
+
+cleanup:
+  idle_ttl_seconds: 900
+  cleanup_interval_seconds: 60
+
+default_plan: standard
+
+exempt_paths:
+  - /health
+  - /internal/rate-limit-stats
