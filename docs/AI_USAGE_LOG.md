@@ -1,7 +1,5 @@
 # AI Usage Log
 
-DRAFT — CANDIDATE MUST VERIFY AND PERSONALIZE
-
 ## Interaction 1
 - What I asked: "Help me choose an algorithm for an in-memory rate limiter that supports bursty traffic and a meaningful Retry-After."
 - What the AI suggested: A fixed-window counter with simple counters per organization and endpoint.
