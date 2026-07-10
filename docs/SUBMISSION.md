@@ -56,8 +56,9 @@ The README contains a short production-readiness plan and failure-mode discussio
 The repository contains a draft AI usage log and a decision log that capture the main design choices and redirections made during the implementation.
 
 ## Repository placeholder
-GitHub repository: [Replace with public repository URL]
+GitHub repository: https://github.com/harshsanas01/provn
 
-CANDIDATE MUST COMPLETE WITHOUT AI ASSISTANCE
 
 Describe a scenario where an AI coding assistant gives a plausible but incorrect answer for this problem. What would the incorrect output look like? How would you catch it before acting on it?
+
+A coding assistant might suggest implementing rate limiting with a simple fixed-window counter because it's easy to understand. At first glance this seems reasonable, but it has a well-known boundary problem: a client can send many requests at the end of one window and immediately send many more at the beginning of the next, effectively exceeding the intended rate. I would catch this by thinking through edge cases, writing tests around window boundaries, and reviewing whether the chosen algorithm matches the fairness requirements. After identifying the issue, I would replace the fixed-window approach with a token bucket or sliding-window algorithm that provides smoother enforcement and controlled burst behavior.
